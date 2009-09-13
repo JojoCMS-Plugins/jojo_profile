@@ -1,0 +1,4 @@
+Much like articles - Displays random profiles on a page with optional Quote, Title, Name and Description and/or a full index with individual pages for each profile
+
+If your site requires multilanguage and uses this plugin, please keep an eye on your url's in links and contact SearchMasters in case of issues.
+team@searchmasters.co.nz
