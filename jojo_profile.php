@@ -263,7 +263,6 @@ class JOJO_Plugin_Jojo_profile extends JOJO_Plugin
             if ($profile['pr_htmllang']) {
                 // Override the language setting on this page if necessary.
                 $content['pg_htmllang'] = $profile['pr_htmllang'];
-                $smarty->assign['pg_htmllang'] = $profile['pr_htmllang'];
             }
             $content['title']            = $profile['pr_name'];
             $content['seotitle']         = Jojo::either($profile['pr_seotitle'], $profile['pr_name'] . ' - ' . $profile['pr_title']);
