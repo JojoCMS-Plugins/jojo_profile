@@ -22,7 +22,7 @@ $_provides['pluginClasses'] = array(
         );
 
 /* Register URI patterns */
-Jojo::registerURI(null, 'Jojo_Plugin_Jojo_profile', 'isUrl');
+Jojo::registerURI(null, 'jojo_plugin_jojo_profile', 'isUrl');
 
 /* Sitemap filter */
 Jojo::addFilter('jojo_sitemap', 'sitemap', 'jojo_profile');
@@ -37,7 +37,8 @@ Jojo::addFilter('jojo_search', 'search', 'jojo_profile');
 Jojo::addFilter('content', 'removesnip', 'jojo_profile');
 
 /* capture the button press in the admin section */
-Jojo::addHook('admin_action_after_save', 'admin_action_after_save', 'jojo_profile');
+Jojo::addHook('admin_action_after_save_page', 'admin_action_after_save_page', 'jojo_profile');
+Jojo::addHook('admin_action_after_save_articlecategory', 'admin_action_after_save_profilecategory', 'jojo_profile');
 
 $_options[] = array(
     'id'         => 'profile_tag_cloud_minimum',
@@ -108,18 +109,6 @@ $_options[] = array(
 );
 
 $_options[] = array(
-    'id'          => 'profile_enable_categories',
-    'category'    => 'Profiles',
-    'label'       => 'Profile Categories',
-    'description' => 'Allows multiple profile collections by category under their own URLs',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_profile'
-);
-
-
-$_options[] = array(
     'id'          => 'profile_sidebar_categories',
     'category'    => 'Profiles',
     'label'       => 'Profile teasers by category',
@@ -139,4 +128,15 @@ $_options[] = array(
     'default'     => 'yes',
     'options'     => 'yes,no',
     'plugin'      => 'jojo_profile'
+);
+
+$_options[] = array(
+    'id'          => 'profile_meta_description',
+    'category'    => 'Profiles',
+    'label'       => 'Dynamic meta description',
+    'description' => 'A dynamically built meta description template to use for articles, which will assist with SEO. Variables to use are [title], [site], [body].',
+    'type'        => 'textarea',
+    'default'     => '[title] - [body]...',
+    'options'     => '',
+    'plugin'      => 'jojo_article'
 );

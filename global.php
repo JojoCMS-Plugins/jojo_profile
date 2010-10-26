@@ -17,39 +17,38 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
-if (Jojo::getOption('profile_num_sidebar_articles') >= 1) {
-    $_PROFILECATEGORIES = (Jojo::getOption('profile_enable_categories', 'no') == 'yes') ? true : false ;
-    $language = (_MULTILANGUAGE) ? $page->getValue('pg_language') : '';
-    $exclude = (boolean)(Jojo::getOption('profile_sidebar_exclude_current', 'no')=='yes' );
-    
-    if ($_PROFILECATEGORIES) {
-        $query = "SELECT pageid, pg_title, pg_url, pc.profilecategoryid, pc.sortby FROM {page} p";
-            $query .= " LEFT JOIN {profilecategory} pc ON (pg_url=pc.pc_url)";        
-            $query .= " WHERE pg_link = ?";        
-            $query .= (_MULTILANGUAGE) ? " AND pg_language = '$language'" : '';        
-            $categories = Jojo::selectQuery($query, array('Jojo_Plugin_Jojo_profile'));
-    }
-    /* Create Profiles array for sidebar based on the page language, shuffle them randomly and display as many as are set in options (default is 1)*/
-    if ($_PROFILECATEGORIES && count($categories)) {
-        foreach ($categories as $c) {
-            $category = $c['pg_url'];
-            $sortby = $c['sortby'] ? $c['sortby'] : '';
-            $categoryid = $c['profilecategoryid'];
-            $profiles = JOJO_Plugin_Jojo_profile::getProfiles('', '', $categoryid, $sortby, $exclude);
-            shuffle($profiles);
-            $profiles = array_slice($profiles, 0, Jojo::getOption('profile_num_sidebar_articles', 1)); 
-            $smarty->assign('profiles_' . str_replace('-', '_', $category), $profiles);
-            $smarty->assign('profiles_' . str_replace('-', '_', $category) . 'home', JOJO_Plugin_Jojo_profile::_getPrefix('', $page->getValue('pg_language'), $categoryid) );
-        }
-    }
-    $profiles = JOJO_Plugin_Jojo_profile::getProfiles('', '', '', '', $exclude);
-    shuffle($profiles);
-    $profiles = array_slice($profiles, 0, Jojo::getOption('profile_num_sidebar_articles', 1)); 
-    $smarty->assign('profiles', $profiles);
-    /* Get the prefix for profiles (can vary for multiple installs) for use in the theme template instead of hard coding it */
-    $smarty->assign('profileshome', JOJO_Plugin_Jojo_profile::_getPrefix('', $language) );
-}
+$numprofiles = Jojo::getOption('profile_num_sidebar_profiles', 3);
 
+if ($numprofiles) {
+$exclude = (boolean)(Jojo::getOption('profile_sidebar_exclude_current', 'no')=='yes');
+//some of the profiles we're getting might have expired or not yet gone live, so put in a buffer
+$num = $numprofiles + 20;
+    /* Create latest profiles array for sidebar: getprofiles(x, start, categoryid) = list x# of profiles */
+    if (Jojo::getOption('profile_sidebar_categories', 'no')=='yes') {
+        $categories = Jojo::selectQuery("SELECT * FROM {profilecategory}");
+        $allprofiles = Jojo_Plugin_Jojo_profile::getProfiles($num, 0, 'all',  'pr_name', $exclude);
+        $allprofiles = array_slice ($allprofiles, 0, $numprofiles);
+        $smarty->assign('allprofiles',  $allprofiles);
+        foreach ($categories as $c) {
+            $catprofiles = Jojo_Plugin_Jojo_profile::getProfiles($num, 0, $c['profilecategoryid'],  $c['sortby'], $exclude );
+            if (isset($catprofiles[0])) {
+                $smarty->assign('profiles_' . str_replace(array('-', '/'), array('_', ''), $catprofiles[0]['pg_url']), $catprofiles);
+            }
+        }
+    } else {
+        if (Jojo::getOption('profile_sidebar_randomise', 0) > 0) {
+            $num = Jojo::getOption('profile_sidebar_randomise', 0) + 20;
+            $recentprofiles = Jojo_Plugin_Jojo_profile::getProfiles($num, 0, 'all',  'pr_name', $exclude);
+            $recentprofiles = array_slice ($recentprofiles, 0, Jojo::getOption('profile_sidebar_randomise', 0));
+            shuffle($recentprofiles);
+        } else {
+            $recentprofiles = Jojo_Plugin_Jojo_profile::getProfiles($num, 0, 'all', 'pr_name', $exclude);
+        }
+        $recentprofiles = array_slice($recentprofiles, 0, $numprofiles);
+        $smarty->assign('profiles', $recentprofiles );
+    }
+
+}
 
 /** Example usage in theme template:
         {if $profiles}

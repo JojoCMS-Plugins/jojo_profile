@@ -17,28 +17,21 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
-if (!defined('_MULTILANGUAGE')) {
-    define('_MULTILANGUAGE', Jojo::getOption('multilanguage', 'no') == 'yes');
-}
-$_PROFILECATEGORIES      = (Jojo::getOption('profile_enable_categories', 'no') == 'yes') ? true : false ;
-
 $table = 'profile';
 $o = 1;
 
-$tabledisplay = (_MULTILANGUAGE) ? ", ' (', pr_language, ')'" : '';
-$menutype = ($_PROFILECATEGORIES) ? 'tree' : 'list';
-
-$default_td[$table]['td_displayfield'] = "CONCAT(pr_name, ' - ' , pr_title$tabledisplay)";
+$default_td[$table]['td_displayfield'] = "CONCAT(pr_firstname, ' ', pr_name, ' - ' , pr_title)";
 $default_td[$table]['td_parentfield'] = '';
-$default_td[$table]['td_orderbyfields'] = "pr_displayorder, pr_name";
+$default_td[$table]['td_orderbyfields'] = "pr_displayorder, pr_name, pr_firstname";
 $default_td[$table]['td_topsubmit'] = 'yes';
 $default_td[$table]['td_filter'] = 'yes';
 $default_td[$table]['td_deleteoption'] = 'yes';
-$default_td[$table]['td_menutype'] = 'list';
+$default_td[$table]['td_menutype'] = 'tree';
 $default_td[$table]['td_categoryfield'] = 'pr_category';
 $default_td[$table]['td_categorytable'] = 'profilecategory';
 $default_td[$table]['td_group1'] = '';
 $default_td[$table]['td_help'] = 'profiles are managed from here.  The system will comfortably take many hundreds of profiles, but you may want to manually delete anything that is no longer relevant, or correct.';
+$default_td[$table]['td_plugin'] = 'Jojo_profile';
 
 //profile ID
 $field = 'profileid';
@@ -48,16 +41,40 @@ $default_fd[$table][$field]['fd_help'] = 'A unique ID, automatically assigned by
 $default_fd[$table][$field]['fd_mode'] = 'advanced';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
+
+// Category Field
+$default_fd[$table]['pr_category'] = array(
+        'fd_name' => "Page",
+        'fd_type' => "dblist",
+        'fd_options' => "profilecategory",
+        'fd_default' => "0",
+        'fd_size' => "20",
+        'fd_help' => "If applicable, the category the Profile belongs to",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+        'fd_mode' => "advanced",
+    );
+
 //Title
-$field = 'pr_title';
+$field = 'pr_honorific';
 $default_fd[$table][$field]['fd_order'] = $o++;
 $default_fd[$table][$field]['fd_type'] = 'text';
 $default_fd[$table][$field]['fd_required'] = 'no';
-$default_fd[$table][$field]['fd_size'] = '60';
-$default_fd[$table][$field]['fd_help'] = 'Title of the profile.';
+$default_fd[$table][$field]['fd_size'] = '10';
+$default_fd[$table][$field]['fd_help'] = 'Honorific title (Mr. Dr. etc)';
 $default_fd[$table][$field]['fd_mode'] = 'basic';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
+//First Name
+$field = 'pr_firstname';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '30';
+$default_fd[$table][$field]['fd_help'] = 'The first names of the profile subject';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Content';
 
 //Name
 $field = 'pr_name';
@@ -65,17 +82,47 @@ $default_fd[$table][$field]['fd_order'] = $o++;
 $default_fd[$table][$field]['fd_type'] = 'text';
 $default_fd[$table][$field]['fd_options'] = '';
 $default_fd[$table][$field]['fd_required'] = 'yes';
-$default_fd[$table][$field]['fd_size'] = '20';
+$default_fd[$table][$field]['fd_size'] = '30';
 $default_fd[$table][$field]['fd_help'] = 'The name of the profile subject';
 $default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Content';
+
+// Qualifications
+$field = 'pr_quals';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '30';
+$default_fd[$table][$field]['fd_help'] = 'Qualifications (MBA, BSc. etc)';
+$default_fd[$table][$field]['fd_mode'] = 'basic';
+$default_fd[$table][$field]['fd_tabname'] = 'Content';
+
+//Job Title
+$field = 'pr_title';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '70';
+$default_fd[$table][$field]['fd_help'] = 'Job Title of the profile.';
+$default_fd[$table][$field]['fd_mode'] = 'basic';
+$default_fd[$table][$field]['fd_tabname'] = 'Content';
+
+//Snippet description
+$field = 'pr_snippet';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'textarea';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_rows'] = '3';
+$default_fd[$table][$field]['fd_help'] = 'Optional short description for snippet.';
+$default_fd[$table][$field]['fd_mode'] = 'basic';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
 
 //Date
 $field = 'pr_date';
 $default_fd[$table][$field]['fd_order']     = $o++;
-$default_fd[$table][$field]['fd_type']      = 'date';
-$default_fd[$table][$field]['fd_default']   = 'NOW()';
+$default_fd[$table][$field]['fd_type']      = 'unixdate';
+$default_fd[$table][$field]['fd_default']   = 'now';
 $default_fd[$table][$field]['fd_help']      = 'Date the profile was published (defaults to Today)';
 $default_fd[$table][$field]['fd_mode']      = 'standard';
 $default_fd[$table][$field]['fd_tabname']   = 'Content';
@@ -152,25 +199,11 @@ $default_fd[$table][$field]['fd_help'] = 'The body of the profile.';
 $default_fd[$table][$field]['fd_mode'] = 'advanced';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
-// Category Field
-$default_fd[$table]['pr_category'] = array(
-        'fd_name' => "Category",
-        'fd_type' => "dblist",
-        'fd_options' => "profilecategory",
-        'fd_default' => "0",
-        'fd_size' => "20",
-        'fd_help' => "If applicable, the category the Profile belongs to",
-        'fd_order' => $o++,
-        'fd_tabname' => "Content",
-        'fd_mode' => "advanced",
-    );
-
 //Language
 $field = 'pr_language';
 $default_fd[$table][$field]['fd_order'] = $o++;
-$default_fd[$table][$field]['fd_type'] = 'dblist';
-$default_fd[$table][$field]['fd_default']   = 'en';
-$default_fd[$table][$field]['fd_options'] = 'lang_country';
+$default_fd[$table][$field]['fd_type'] = 'hidden';
+$default_fd[$table][$field]['fd_default']   = '';
 $default_fd[$table][$field]['fd_required'] = 'no';
 $default_fd[$table][$field]['fd_size'] = '20';
 $default_fd[$table][$field]['fd_help'] = 'The language/country of the profile';
@@ -189,6 +222,64 @@ $default_fd[$table][$field]['fd_help'] = 'The language of the profile (if differ
 $default_fd[$table][$field]['fd_mode'] = 'advanced';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
+
+/* Location TAB */
+$o=0;
+
+//Department
+$field = 'pr_department';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '40';
+$default_fd[$table][$field]['fd_help'] = 'The name of the department/section';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Location/Contact';
+
+//Phone
+$field = 'pr_phone';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '20';
+$default_fd[$table][$field]['fd_help'] = 'DDI phone or extension';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Location/Contact';
+
+//Phone
+$field = 'pr_fax';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '20';
+$default_fd[$table][$field]['fd_help'] = 'DDI fax or extension';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Location/Contact';
+
+//Email
+$field = 'pr_email';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'email';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '20';
+$default_fd[$table][$field]['fd_help'] = 'email address';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Location/Contact';
+
+//Department
+$field = 'pr_room';
+$default_fd[$table][$field]['fd_order'] = $o++;
+$default_fd[$table][$field]['fd_type'] = 'text';
+$default_fd[$table][$field]['fd_options'] = '';
+$default_fd[$table][$field]['fd_required'] = 'no';
+$default_fd[$table][$field]['fd_size'] = '40';
+$default_fd[$table][$field]['fd_help'] = 'Room no. / floor etc';
+$default_fd[$table][$field]['fd_mode'] = 'advanced';
+$default_fd[$table][$field]['fd_tabname'] = 'Location/Contact';
 
 /* SEO TAB */
 
@@ -218,10 +309,9 @@ $default_fd[$table]['pr_metadesc'] = array(
         'fd_mode' => "advanced",
     );
 
-
+if (class_exists('Jojo_Plugin_Jojo_Tags')) {
 /* TAGS TAB */
 $o = 1;
-
 //Tags
 $field = 'pr_tags';
 $default_fd[$table][$field]['fd_order']     = $o++;
@@ -233,6 +323,7 @@ $default_fd[$table][$field]['fd_showlabel'] = 'no';
 $default_fd[$table][$field]['fd_tabname']   = 'Tags';
 $default_fd[$table][$field]['fd_help']      = 'A list of words describing the profile';
 $default_fd[$table][$field]['fd_mode']      = 'standard';
+}
 
 /* SCHEDULING TAB */
 $o = 1;
@@ -261,15 +352,16 @@ $default_fd[$table][$field]['fd_tabname']   = 'Scheduling';
 $default_td['profilecategory'] = array(
         'td_name' => "profilecategory",
         'td_primarykey' => "profilecategoryid",
-        'td_displayfield' => "pc_url",
+        'td_displayfield' => "pageid",
         'td_filter' => "yes",
         'td_topsubmit' => "yes",
         'td_deleteoption' => "yes",
         'td_menutype' => "list",
         'td_help' => "New Profile Categories are managed from here.",
+        'td_plugin' => "Jojo_profile",
     );
 
-
+$o=0;
 /* Content Tab */
 
 // Articlecategoryid Field
@@ -277,19 +369,43 @@ $default_fd['profilecategory']['profilecategoryid'] = array(
         'fd_name' => "ID",
         'fd_type' => "readonly",
         'fd_help' => "A unique ID, automatically assigned by the system",
-        'fd_order' => "1",
+        'fd_order' => $o++,
         'fd_tabname' => "Content",
         'fd_mode' => "advanced",
+    );
+
+// Page Field
+$default_fd['profilecategory']['pageid'] = array(
+        'fd_name' => "Page",
+        'fd_type' => "dbpluginpagelist",
+        'fd_options' => "jojo_plugin_jojo_profile",
+        'fd_readonly' => "1",
+        'fd_default' => "0",
+        'fd_help' => "The artciles page on the site used for this category.",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
     );
 
 // URL Field
 $default_fd['profilecategory']['pc_url'] = array(
         'fd_name' => "URL",
-        'fd_type' => "internalurl",
-        'fd_required' => "yes",
+        'fd_type' => "hidden",
+        'fd_required' => "no",
         'fd_size' => "60",
         'fd_help' => "URL for the Profile Category. This will be used for the base URL for all articles in this category. The Page url for this category's home page MUST match the category URL.",
-        'fd_order' => "2",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
+
+// Type Field
+$default_fd['profilecategory']['type'] = array(
+        'fd_name' => "Type",
+        'fd_type' => "radio",
+        'fd_options' => "normal:Normal\nparent:Parent\nindex:All",
+        'fd_readonly' => "0",
+        'fd_default' => "normal",
+        'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
 
@@ -299,9 +415,30 @@ $default_fd['profilecategory']['sortby'] = array(
         'fd_type' => "radio",
         'fd_options' => "pr_title asc:Title\npr_date desc:Profile Date\npr_livedate desc:Go Live Date\npr_name:Profile Name\npr_displayorder:Assigned Order",
         'fd_default' => "pr_name",
-        'fd_order' => "3",
+        'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
 
 
-
+// Thumbnail sizing Field
+$default_fd['profilecategory']['thumbnail'] = array(
+        'fd_name' => "Thumbnail Size",
+        'fd_type' => "text",
+        'fd_readonly' => "0",
+        'fd_default' => "s150",
+        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+    
+if (class_exists('Jojo_Plugin_Jojo_comment')) {
+// Allow Comments
+$default_fd['profilecategory']['comments'] = array(
+        'fd_name' => "Enable comments",
+        'fd_type' => "yesno",
+        'fd_readonly' => "0",
+        'fd_default' => "0",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+}
