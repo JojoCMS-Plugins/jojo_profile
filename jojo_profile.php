@@ -283,20 +283,6 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
 
         $profiles = self::getprofiles('', '', $categoryid, $sortby, $exclude=false, $include='showhidden');
 
-        if ($action == 'rss') {
-            $rssfields = array(
-                'pagetitle' => $this->page['pg_title'],
-                'pageurl' => _SITEURL . '/' . $pageprefix . $this->page['pg_url'] . '/',
-                'title' => 'pr_name',
-                'body' => 'pr_description',
-                'url' => 'url',
-                'date' => 'date',
-                'datetype' => 'unix',
-            );
-            $profiles = array_slice($profiles, 0, Jojo::getOption('rss_num_items', 15));
-            Jojo::getFeed($profiles, $rssfields);
-        }
-
         if ($profileid || !empty($url)) {
             /* find the current, next and previous items */
             $profile = array();
@@ -586,9 +572,6 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                     $profiletree->addNode('p' . $p, $parent, $nodetitle, $url);
                 }
             }
-            /* Add RSS link for the plugin page */
-            if ($i['rsslink']) $profiletree->addNode('rss', $parent, $i['title'] . ' RSS Feed', $indexurl . 'rss/');
-
             /* Add to the sitemap array */
             if ($_INPLACE) {
                 /* Add inplace */
@@ -598,7 +581,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                 $mldata = Jojo::getMultiLanguageData();
                 /* Add to the end */
                 $sitemap["profiles$k"] = array(
-                    'title' => $i['title'] . ( _MULTILANGUAGE ? ' (' . ucfirst($mldata['sectiondata'][$i['root']]['name']) . ')' : ''),
+                    'title' => $i['title'] . (count($mldata['sectiondata'])>1 ? ' (' . ucfirst($mldata['sectiondata'][$i['root']]['name']) . ')' : ''),
                     'tree' => $profiletree->asArray(),
                     'order' => 3 + $k,
                     'header' => '',
@@ -748,8 +731,6 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
 
         /* index with pagination */
         if ($pagenum > 1) return parent::getCorrectUrl() . 'p' . $pagenum . '/';
-
-        if ($action == 'rss') return parent::getCorrectUrl() . 'rss/';
 
         /* index - default */
         return parent::getCorrectUrl();
