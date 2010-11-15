@@ -419,7 +419,16 @@ $default_fd['profilecategory']['sortby'] = array(
         'fd_tabname' => "Content",
     );
 
-
+// Add to Nav 
+$default_fd['profilecategory']['addtonav'] = array(
+        'fd_name' => "Show Profiles in Nav",
+        'fd_type' => "yesno",
+        'fd_help' => "Add profiles to navigation as child pages of this one.",
+        'fd_default' => "0",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+    
 // Thumbnail sizing Field
 $default_fd['profilecategory']['thumbnail'] = array(
         'fd_name' => "Thumbnail Size",

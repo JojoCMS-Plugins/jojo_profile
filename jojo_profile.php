@@ -454,7 +454,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
     static function getPluginPages($for='', $section=0)
     {
         global $sectiondata;
-        $items =  Jojo::selectQuery("SELECT c.*, p.*  FROM {profilecategory} c LEFT JOIN {page} p ON (c.pageid=p.pageid) ORDER BY pg_parent, pg_order");
+        $items =  Jojo::selectAssoc("SELECT p.pageid AS id, c.*, p.*  FROM {profilecategory} c LEFT JOIN {page} p ON (c.pageid=p.pageid) ORDER BY pg_parent, pg_order");
         // use core function to clean out any pages based on permission, status, expiry etc
         $items =  Jojo_Plugin_Core::cleanItems($items, $for);
         foreach ($items as $k=>$i){
@@ -464,6 +464,30 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
             }
         }
         return $items;
+    }
+
+    static function getNavItems($pageid, $selected=false)
+    {
+        $nav = array();
+        $section = Jojo::getSectionRoot($pageid);
+        $profilepages = self::getPluginPages('', $section);
+        if (!$profilepages) return $nav;
+        $categoryid = $profilepages[$pageid]['profilecategoryid'];
+        $sortby = $profilepages[$pageid]['sortby'];
+        $items = isset($profilepages[$pageid]['addtonav']) && $profilepages[$pageid]['addtonav'] ? self::getProfiles('', '', $categoryid, $sortby) : '';
+        if (!$items) return $nav;
+        //if the page is currently selected, check to see if an item has been called
+        if ($selected) {
+            $id = Jojo::getFormData('id', 0);
+            $url = Jojo::getFormData('url', '');
+        }
+        foreach ($items as $i) {
+            $nav[$i['id']]['url'] = $i['url'];
+            $nav[$i['id']]['title'] = $i['title'];
+            $nav[$i['id']]['label'] = $i['fullname'];
+            $nav[$i['id']]['selected'] = (boolean)($selected && (($id && $id== $i['id']) ||(!empty($url) && $i['url'] == $url)));
+        }
+        return $nav;
     }
 
     // Sync the articategory data over to the page table

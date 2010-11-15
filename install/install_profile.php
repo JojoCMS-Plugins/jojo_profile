@@ -78,6 +78,7 @@ $query = "
       `profilecategoryid` int(11) NOT NULL auto_increment,
       `pc_url` varchar(255) NOT NULL default '',
       `sortby` ENUM('pr_title asc','pr_date desc','pr_livedate desc','pr_name','pr_displayorder') NOT NULL default 'pr_name',
+      `addtonav` tinyint(1) NOT NULL default '0',
       `pageid` int(11) NOT NULL default '0',
       `type` enum('normal','parent','index') NOT NULL default 'normal',
       `thumbnail` varchar(255) NOT NULL default '',";
