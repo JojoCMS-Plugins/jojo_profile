@@ -84,6 +84,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
             $i['quals']            = isset($i['pr_quals']) ? htmlspecialchars($i['pr_quals'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['fullname']      = (!empty($i['honorific']) ? $i['honorific'] . ' ' : '') . (!empty($i['firstname']) ? $i['firstname'] . ' ' : '') . $i['name'];
             $i['snippet']       =  isset($i['pr_snippet']) ? htmlspecialchars(nl2br($i['pr_snippet']), ENT_COMPAT, 'UTF-8', false) : '';
+            $i['department']        =  isset($i['pr_department']) ? htmlspecialchars($i['pr_department'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['phone']        =  isset($i['pr_phone']) ? htmlspecialchars($i['pr_phone'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['fax']        =  isset($i['pr_fax']) ? htmlspecialchars($i['pr_fax'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['room']      =  isset($i['pr_room']) ? htmlspecialchars($i['pr_room'], ENT_COMPAT, 'UTF-8', false) : '';
@@ -370,7 +371,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                 $content['pg_htmllang'] = $profile['pr_htmllang'];
                 $smarty->assign('pg_htmllang', $profile['pr_htmllang']);
             }
-            $content['title']            =  $profile['fullname'] . (!empty($profile['quals']) ? ', ' . $profile['quals'] : '');
+            $content['title']            =  $profile['fullname'] . (!empty($profile['quals']) ? ' <span class="qualifications">' . $profile['quals'] . '</span>' : '');
             $content['seotitle']         = Jojo::either($profile['pr_seotitle'], $profile['fullname'] . ' - ' . $profile['title']);
             $content['breadcrumbs']      = $breadcrumbs;
 
