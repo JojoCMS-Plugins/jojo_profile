@@ -83,7 +83,6 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
             $i['honorific']     =  isset($i['pr_honorific']) ? htmlspecialchars($i['pr_honorific'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['quals']            = isset($i['pr_quals']) ? htmlspecialchars($i['pr_quals'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['fullname']      = (!empty($i['honorific']) ? $i['honorific'] . ' ' : '') . (!empty($i['firstname']) ? $i['firstname'] . ' ' : '') . $i['name'];
-            $i['snippet']       =  isset($i['pr_snippet']) ? htmlspecialchars(nl2br($i['pr_snippet']), ENT_COMPAT, 'UTF-8', false) : '';
             $i['department']        =  isset($i['pr_department']) ? htmlspecialchars($i['pr_department'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['phone']        =  isset($i['pr_phone']) ? htmlspecialchars($i['pr_phone'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['fax']        =  isset($i['pr_fax']) ? htmlspecialchars($i['pr_fax'], ENT_COMPAT, 'UTF-8', false) : '';
@@ -94,8 +93,13 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
             $i['description'] = preg_replace('/\[\[.*?\]\]/', '',  trim(strip_tags($i['description'])));
             $i['quote'] = preg_replace('/\[\[.*?\]\]/', '',  trim(strip_tags($i['pr_quote'])));
             $i['bodyplain']  = $i['description'] . ' ' . $i['quote'];
+            $i['desc'] = isset($i['pr_snippet']) && $i['pr_snippet'] ? htmlspecialchars(nl2br($i['pr_snippet']), ENT_COMPAT, 'UTF-8', false) : (strlen($i['bodyplain']) >400 ?  substr($mbody=wordwrap($i['bodyplain'], 400, '$$'), 0, strpos($mbody,'$$')) . '...' : $i['bodyplain']);
+            $i['snippet']       = isset($i['snippet']) ? $i['snippet'] : '400';
+            $i['thumbnail']       = isset($i['thumbnail']) ? $i['thumbnail'] : 's150';
+            $i['mainimage']       = isset($i['mainimage']) ? $i['mainimage'] : 'v60000';
+            $i['readmore'] = isset($i['readmore']) ? str_replace(' ', '&nbsp;', htmlspecialchars($i['readmore'], ENT_COMPAT, 'UTF-8', false)) : '&gt;&nbsp;read&nbsp;more';
             $i['date']       = $i['pr_date'];
-            $i['datefriendly'] = Jojo::formatTimestamp($i['pr_date'], "medium");
+            $i['datefriendly'] = isset($i['dateformat']) && !empty($i['dateformat']) ? strftime($i['dateformat'], $i['pr_date']) :  Jojo::formatTimestamp($i['pr_date'], "medium");
             $i['image'] = !empty($i['pr_image']) ? 'profiles/' . $i['pr_image'] : '';
             $i['url']          = self::getUrl($i['profileid'], $i['pr_url'], $i['fullname'], $i['pageid'], $i['pr_category']);
             $i['plugin']     = 'jojo_profile';
@@ -379,7 +383,6 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                 $content['meta_description'] = $profile['pr_metadesc'];
             } else {
                 $meta_description_template = Jojo::getOption('profile_meta_description', '[title] - [body]... ');
-                $profilebody = (strlen($profile['bodyplain']) >400) ?  substr($mbody=wordwrap($profile['bodyplain'], 400, '$$'), 0, strpos($mbody,'$$')) : $profile['bodyplain'];
                 $metafilters = array(
                         '[title]',
                         '[site]',
@@ -388,11 +391,16 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                 $metafilterreplace = array(
                         $profile['name'] . ' - ' . $profile['title'],
                         _SITETITLE,
-                        $profilebody,
+                        $profile['desc'],
                         );
                         $content['meta_description'] = str_replace($metafilters, $metafilterreplace, $meta_description_template);
             }
             $content['metadescription']  = $content['meta_description'];
+            if ((boolean)(Jojo::getOption('ogdata', 'no')=='yes')) {
+                $content['ogtags']['description'] = $profile['desc'];
+                $content['ogtags']['image'] = $profile['image'] ? _SITEURL .  '/images/' . ($profile['thumbnail'] ? $profile['thumbnail'] : 's150') . '/' . $profile['image'] : '';
+                $content['ogtags']['title'] = $profile['name'] . ' - ' . $profile['title'];
+            }
 
             $content['content'] = $smarty->fetch('jojo_profile.tpl');
 

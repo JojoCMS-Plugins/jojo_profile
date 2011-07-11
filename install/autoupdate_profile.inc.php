@@ -362,10 +362,11 @@ $default_td['profilecategory'] = array(
     );
 
 $o=0;
+$table = 'profilecategory';
 /* Content Tab */
 
 // Articlecategoryid Field
-$default_fd['profilecategory']['profilecategoryid'] = array(
+$default_fd[$table]['profilecategoryid'] = array(
         'fd_name' => "ID",
         'fd_type' => "readonly",
         'fd_help' => "A unique ID, automatically assigned by the system",
@@ -375,7 +376,7 @@ $default_fd['profilecategory']['profilecategoryid'] = array(
     );
 
 // Page Field
-$default_fd['profilecategory']['pageid'] = array(
+$default_fd[$table]['pageid'] = array(
         'fd_name' => "Page",
         'fd_type' => "dbpluginpagelist",
         'fd_options' => "jojo_plugin_jojo_profile",
@@ -399,7 +400,7 @@ $default_fd['profilecategory']['pc_url'] = array(
 
 
 // Type Field
-$default_fd['profilecategory']['type'] = array(
+$default_fd[$table]['type'] = array(
         'fd_name' => "Type",
         'fd_type' => "radio",
         'fd_options' => "normal:Normal\nparent:Parent\nindex:All",
@@ -410,7 +411,7 @@ $default_fd['profilecategory']['type'] = array(
     );
 
 // Sortby Field
-$default_fd['profilecategory']['sortby'] = array(
+$default_fd[$table]['sortby'] = array(
         'fd_name' => "Sortby",
         'fd_type' => "radio",
         'fd_options' => "pr_title asc:Title\npr_date desc:Profile Date\npr_livedate desc:Go Live Date\npr_name:Profile Name\npr_displayorder:Assigned Order",
@@ -420,7 +421,7 @@ $default_fd['profilecategory']['sortby'] = array(
     );
 
 // Add to Nav 
-$default_fd['profilecategory']['addtonav'] = array(
+$default_fd[$table]['addtonav'] = array(
         'fd_name' => "Show Profiles in Nav",
         'fd_type' => "yesno",
         'fd_help' => "Add profiles to navigation as child pages of this one.",
@@ -429,8 +430,52 @@ $default_fd['profilecategory']['addtonav'] = array(
         'fd_tabname' => "Content",
     );
     
+// Snippet Length Field
+$default_fd[$table]['snippet'] = array(
+        'fd_name' => "Snippet Length",
+        'fd_type' => "text",
+        'fd_readonly' => "0",
+        'fd_default' => "full",
+        'fd_help' => "Truncate index snippets to this many characters. Use 'full' for no snipping.",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
+// Read more link text 
+$default_fd[$table]['readmore'] = array(
+        'fd_name' => "Read more link",
+        'fd_type' => "text",
+        'fd_readonly' => "0",
+        'fd_default' => '> Read more',
+        'fd_help' => "The link text to read the full item",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
+// Show Date
+$default_fd[$table]['showdate'] = array(
+        'fd_name' => "Show Post Date",
+        'fd_type' => "yesno",
+        'fd_readonly' => "0",
+        'fd_default' => "1",
+        'fd_help' => "Show date added on posts",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
+// Date format Field
+$default_fd[$table]['dateformat'] = array(
+        'fd_name' => "Date Format",
+        'fd_type' => "text",
+        'fd_readonly' => "0",
+        'fd_default' => "%e %b %Y",
+        'fd_help' => "Format the time and/or date according to locale settings. See php.net/strftime for details",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
 // Thumbnail sizing Field
-$default_fd['profilecategory']['thumbnail'] = array(
+$default_fd[$table]['thumbnail'] = array(
         'fd_name' => "Thumbnail Size",
         'fd_type' => "text",
         'fd_readonly' => "0",
@@ -439,15 +484,43 @@ $default_fd['profilecategory']['thumbnail'] = array(
         'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
-    
+
+// Main image sizing 
+$default_fd[$table]['mainimage'] = array(
+        'fd_name' => "Main Image",
+        'fd_type' => "text",
+        'fd_readonly' => "0",
+        'fd_default' => "v60000",
+        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
 if (class_exists('Jojo_Plugin_Jojo_comment')) {
 // Allow Comments
-$default_fd['profilecategory']['comments'] = array(
+$default_fd[$table]['comments'] = array(
         'fd_name' => "Enable comments",
         'fd_type' => "yesno",
         'fd_readonly' => "0",
-        'fd_default' => "0",
+        'fd_default' => "1",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
+    );
+}
+
+/* add many to many table for use by newsletter plugin if present */
+if (class_exists('Jojo_Plugin_Jojo_Newsletter')) {
+$default_fd['newsletter']['profiles'] = array(
+        'fd_name' => "Profiles To Include",
+        'fd_type' => "many2manyordered",
+        'fd_size' => "0",
+        'fd_rows' => "0",
+        'fd_cols' => "0",
+        'fd_showlabel' => "no",
+        'fd_tabname' => "2. Profiles",
+        'fd_m2m_linktable' => "newsletter_profile",
+        'fd_m2m_linkitemid' => "newsletterid",
+        'fd_m2m_linkcatid' => "profileid",
+        'fd_m2m_cattable' => "profile",
     );
 }

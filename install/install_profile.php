@@ -76,12 +76,17 @@ $table = 'profilecategory';
 $query = "
     CREATE TABLE {profilecategory} (
       `profilecategoryid` int(11) NOT NULL auto_increment,
-      `pc_url` varchar(255) NOT NULL default '',
       `sortby` ENUM('pr_title asc','pr_date desc','pr_livedate desc','pr_name','pr_displayorder') NOT NULL default 'pr_name',
       `addtonav` tinyint(1) NOT NULL default '0',
       `pageid` int(11) NOT NULL default '0',
       `type` enum('normal','parent','index') NOT NULL default 'normal',
-      `thumbnail` varchar(255) NOT NULL default '',";
+      `pageid` int(11) NOT NULL default '0',
+      `showdate` tinyint(1) NOT NULL default '0',
+      `dateformat` varchar(255) NOT NULL default '%e %b %Y',
+      `snippet` varchar(255) NOT NULL default '400',
+      `readmore` varchar(255) NOT NULL default '> Read more',
+      `thumbnail` varchar(255) NOT NULL default '',
+      `mainimage` varchar(255) NOT NULL default 'v60000',";
 if (class_exists('Jojo_Plugin_Jojo_comment')) {
     $query .= "
      `comments` tinyint(1) NOT NULL default '0',";
@@ -106,3 +111,35 @@ if (isset($result['added'])) {
 }
 
 if (isset($result['different'])) Jojo::printTableDifference($table, $result['different']);
+
+/* add relational table for use by newsletter plugin if present */
+if (class_exists('Jojo_Plugin_Jojo_Newsletter')) {
+    $table = 'newsletter_profile';
+    $query = "CREATE TABLE {newsletter_profile} (
+      `newsletterid` int(11) NOT NULL,
+      `profileid` int(11) NOT NULL,
+      `order` int(11) NOT NULL
+    );";
+    
+    /* Check table structure */
+    $result = Jojo::checkTable($table, $query);
+    
+    /* Output result */
+    if (isset($result['created'])) {
+        echo sprintf("jojo_newsletter_phplist: Table <b>%s</b> Does not exist - created empty table.<br />", $table);
+    }
+    
+    if (isset($result['added'])) {
+        foreach ($result['added'] as $col => $v) {
+            echo sprintf("jojo_newsletter_phplist: Table <b>%s</b> column <b>%s</b> Does not exist - added.<br />", $table, $col);
+        }
+    }
+    
+    if (isset($result['different'])) Jojo::printTableDifference($table,$result['different']);
+
+    /* add the new field to the newsletter table if it does not exist */
+    if (Jojo::tableExists('newsletter') && !Jojo::fieldExists('newsletter', 'profiles')) {
+        Jojo::structureQuery("ALTER TABLE `newsletter` ADD `profiles` TEXT NOT NULL;");
+    }
+
+}
