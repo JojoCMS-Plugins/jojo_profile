@@ -30,7 +30,11 @@ if (class_exists('Jojo_Plugin_Jojo_Tags')) {
 $query .= "
       `pr_tags` text NULL,";
 }
- $query .= "
+if (class_exists('Jojo_Plugin_Jojo_comment')) {
+    $query .= "
+     `pr_comments` enum('yes','no') NOT NULL default 'yes',";
+}
+$query .= "
       `pr_livedate` int(11) NOT NULL default '0',
       `pr_expirydate` int(11) NOT NULL default '0',
       `pr_seotitle` varchar(255) NOT NULL default '',

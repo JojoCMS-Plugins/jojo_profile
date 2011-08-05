@@ -6,18 +6,14 @@
         {if $jojo_profile.title}<h4>{$jojo_profile.title}</h4>{/if}
         {$jojo_profile.pr_description}
     </div>
+{if $tags}<p class="tags"><strong>Tags: </strong>
+    {if $itemcloud}{$itemcloud}
+    {else}{foreach from=$tags item=tag}<a href="{if $multilangstring}{$multilangstring}{/if}tags/{$tag.url}/">{$tag.cleanword}</a>
+    {/foreach}</p>
+    {/if}
+{/if}
+{if $commenthtml}{$commenthtml}{/if}
 <p class="links">&lt;&lt; <a href="{$jojo_profile.pageurl}" title="back">{$jojo_profile.pagetitle}</a>&nbsp; {if $prevprofile}&lt; <a href="{$prevprofile.url}" title="Previous">{$prevprofile.fullname}</a>{/if}{if $nextprofile} | <a href="{$nextprofile.url}" title="Next">{$nextprofile.fullname}</a> &gt;{/if}</p>
-{if $tags}
-    <p class="tags"><strong>Tags: </strong>
-{if $itemcloud}
-        {$itemcloud}
-{else}
-{foreach from=$tags item=tag}
-        <a href="{if $multilangstring}{$multilangstring}{/if}tags/{$tag.url}/">{$tag.cleanword}</a>
-{/foreach}
-    </p>
-{/if}
-{/if}
 
 {else}
 	{if $pg_body && $pagenum==1}{$pg_body}{/if}

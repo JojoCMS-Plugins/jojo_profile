@@ -199,6 +199,18 @@ $default_fd[$table][$field]['fd_help'] = 'The body of the profile.';
 $default_fd[$table][$field]['fd_mode'] = 'advanced';
 $default_fd[$table][$field]['fd_tabname'] = 'Content';
 
+// Comments Field
+$default_fd[$table]['pr_comments'] = array(
+        'fd_name' => "Comments enabled",
+        'fd_type' => "radio",
+        'fd_options' => "yes\nno",
+        'fd_default' => "yes",
+        'fd_help' => "Whether comments are allowed for this item",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+        'fd_mode' => "advanced",
+    );
+
 //Language
 $field = 'pr_language';
 $default_fd[$table][$field]['fd_order'] = $o++;

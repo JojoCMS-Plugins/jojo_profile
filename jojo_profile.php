@@ -354,6 +354,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
                 if (Jojo::getFormData('comment', false)) {
                     Jojo_Plugin_Jojo_comment::postComment($profile);
                 }
+               $commentsenabled = (boolean)(isset($profile['pr_comments']) && $profile['pr_comments']=='yes');
                $commenthtml = Jojo_Plugin_Jojo_comment::getComments($profile['id'], $profile['plugin'], $profile['pageid'], true);
                $smarty->assign('commenthtml', $commenthtml);
             }
