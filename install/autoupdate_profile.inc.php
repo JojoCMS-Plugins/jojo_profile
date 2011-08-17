@@ -136,7 +136,7 @@ $default_fd[$table][$field]['fd_size']      = '20';
 $default_fd[$table][$field]['fd_help']      = 'A customized URL - leave blank to create a URL from the title of the profile';
 /* the actual URL may vary here, so query the database to be sure */
 $default_fd[$table][$field]['fd_options']   = 'profiles';
-$default_fd[$table][$field]['fd_options'] = JOJO_Plugin_Jojo_profile::_getPrefix();
+$default_fd[$table][$field]['fd_options'] = class_exists('Jojo_Plugin_Jojo_profile') ? Jojo_Plugin_Jojo_profile::_getPrefix() : '';
 $default_fd[$table][$field]['fd_mode']      = 'standard';
 $default_fd[$table][$field]['fd_tabname']   = 'Content';
 
