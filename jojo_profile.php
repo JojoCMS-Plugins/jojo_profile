@@ -50,6 +50,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
         $profiles = Jojo::selectQuery($query);
         $profiles = self::cleanItems($profiles, $exclude, $include);
         if (!$num)  $profiles = self::sortItems($profiles, $sortby);
+        $profiles = array_values($profiles);
         return $profiles;
     }
 

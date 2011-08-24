@@ -98,6 +98,17 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'profile_sidebar_randomise',
+    'category'    => 'Profiles',
+    'label'       => 'Randmomise selection of teasers out of',
+    'description' => 'Pick the sidebar items from a larger group, shuffle them, and then slice them back to the original number so that sidebar content is more dynamic  - set to 0 to disable',
+    'type'        => 'integer',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_profile'
+);
+
+$_options[] = array(
     'id'          => 'profile_inplacesitemap',
     'category'    => 'Profiles',
     'label'       => 'Profile sitemap location',

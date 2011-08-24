@@ -17,9 +17,8 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
-$numprofiles = Jojo::getOption('profile_num_sidebar_profiles', 3);
+$numprofiles = Jojo::getOption('profile_num_sidebar_articles', 3);
 
-if ($numprofiles) {
 $exclude = (boolean)(Jojo::getOption('profile_sidebar_exclude_current', 'no')=='yes');
 //some of the profiles we're getting might have expired or not yet gone live, so put in a buffer
 $num = $numprofiles + 20;
@@ -48,7 +47,6 @@ $num = $numprofiles + 20;
         $smarty->assign('profiles', $recentprofiles );
     }
 
-}
 
 /** Example usage in theme template:
         {if $profiles}
