@@ -143,7 +143,7 @@ $default_fd[$table][$field]['fd_tabname']   = 'Content';
 // Display Order Field
 $default_fd[$table]['pr_displayorder'] = array(
         'fd_name' => "Display Order",
-        'fd_type' => "order",
+        'fd_type' => "integer",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
         'fd_mode' => "advanced",
