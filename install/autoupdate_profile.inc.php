@@ -448,7 +448,7 @@ $default_fd[$table]['snippet'] = array(
         'fd_type' => "text",
         'fd_readonly' => "0",
         'fd_default' => "full",
-        'fd_help' => "Truncate index snippets to this many characters. Use 'full' for no snipping.",
+        'fd_help' => "Truncate index snippets to this many characters. Use 'full' for no snipping, set to 0 to disable.",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
@@ -459,7 +459,18 @@ $default_fd[$table]['readmore'] = array(
         'fd_type' => "text",
         'fd_readonly' => "0",
         'fd_default' => '> Read more',
-        'fd_help' => "The link text to read the full item",
+        'fd_help' => "The link text to read the full item, set to 0 to disable",
+        'fd_order' => $o++,
+        'fd_tabname' => "Content",
+    );
+
+// Show Next / Previous
+$default_fd[$table]['nextprevious'] = array(
+        'fd_name' => "Show Next / Previous links",
+        'fd_type' => "yesno",
+        'fd_readonly' => "0",
+        'fd_default' => "1",
+        'fd_help' => "Show next / previous links in profiles",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
@@ -469,7 +480,7 @@ $default_fd[$table]['showdate'] = array(
         'fd_name' => "Show Post Date",
         'fd_type' => "yesno",
         'fd_readonly' => "0",
-        'fd_default' => "1",
+        'fd_default' => "0",
         'fd_help' => "Show date added on posts",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
@@ -492,7 +503,7 @@ $default_fd[$table]['thumbnail'] = array(
         'fd_type' => "text",
         'fd_readonly' => "0",
         'fd_default' => "s150",
-        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000",
+        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000 - set to 0 to disable",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
@@ -503,7 +514,7 @@ $default_fd[$table]['mainimage'] = array(
         'fd_type' => "text",
         'fd_readonly' => "0",
         'fd_default' => "v60000",
-        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000",
+        'fd_help' => "image thumbnail sizing in index eg: 150x200, h200, v4000 - set to 0 to disable",
         'fd_order' => $o++,
         'fd_tabname' => "Content",
     );
