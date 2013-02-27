@@ -21,7 +21,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
 {
 
     /* Get articles  */
-    static function getProfiles($num=false, $start = 0, $categoryid='all', $sortby='pr_displayorder, pr_name', $exclude=false, $include=false) {
+    public static function getProfiles($num=false, $start = 0, $categoryid='all', $sortby='pr_displayorder, pr_name', $exclude=false, $include=false) {
         global $page;
         if ($categoryid == 'all' && $include != 'alllanguages') {
             $categoryid = array();
@@ -55,7 +55,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
     }
 
      /* get items by id - accepts either an array of ids returning a results array, or a single id returning a single result  */
-    static function getItemsById($ids = false, $sortby='pr_displayorder, pr_name') {
+    public static function getItemsById($ids = false, $sortby='pr_displayorder, pr_name') {
         $query  = "SELECT pr.*, c.*, p.pageid, pg_menutitle, pg_title, pg_url, pg_status, pg_livedate, pg_expirydate";
         $query .= " FROM {profile} pr";
         $query .= " LEFT JOIN {profilecategory} c ON (pr.pr_category=c.profilecategoryid) LEFT JOIN {page} p ON (c.pageid=p.pageid)";
@@ -67,7 +67,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
     }
 
     /* clean items for output */
-    static function cleanItems($items, $exclude=false, $include=false) {
+    private static function cleanItems($items, $exclude=false, $include=false) {
         $now    = time();
         foreach ($items as $k=>&$i){
             $pagedata = Jojo_Plugin_Core::cleanItems(array($i), $include);
@@ -89,7 +89,8 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
             $i['fax']        =  isset($i['pr_fax']) ? htmlspecialchars($i['pr_fax'], ENT_COMPAT, 'UTF-8', false) : '';
             $i['room']      =  isset($i['pr_room']) ? htmlspecialchars($i['pr_room'], ENT_COMPAT, 'UTF-8', false) : '';
             // Snip for the index description
-            $i['description'] = array_shift(Jojo::iExplode('[[snip]]', $i['pr_description']));
+            $splitcontent = Jojo::iExplode('[[snip]]', $i['pr_description']);
+            $i['description'] = array_shift($splitcontent);
             /* Strip all tags and template include code ie [[ ]] */
             $i['description'] = preg_replace('/\[\[.*?\]\]/', '',  trim(strip_tags($i['description'])));
             $i['quote'] = preg_replace('/\[\[.*?\]\]/', '',  trim(strip_tags($i['pr_quote'])));
@@ -110,7 +111,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
     }
 
     /* sort items for output */
-    static function sortItems($items, $sortby=false) {
+    private static function sortItems($items, $sortby=false) {
         if ($sortby) {
             $order = "name";
             $reverse = false;
@@ -168,7 +169,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
      * calculates the URL - requires the ID, but works without a query if given the URL or title from a previous query
      *
      */
-    static function getUrl($id=false, $url=false, $title=false, $pageid=false, $category=false )
+    public static function getUrl($id=false, $url=false, $title=false, $pageid=false, $category=false )
     {
         $pageprefix = Jojo::getPageUrlPrefix($pageid);
 
@@ -477,7 +478,7 @@ class Jojo_Plugin_Jojo_profile extends Jojo_Plugin
         return $items;
     }
 
-    static function getNavItems($pageid, $selected=false)
+    public static function getNavItems($pageid, $selected=false)
     {
         $nav = array();
         $section = Jojo::getSectionRoot($pageid);
